@@ -1,0 +1,21 @@
+# Node.js 関連
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# 一時ファイル
+.DS_Store
+Thumbs.db
+*.log
+
+# 環境ファイル
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE / エディタ関連
+.vscode/
+.idea/
+*.swp
