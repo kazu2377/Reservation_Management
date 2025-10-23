@@ -4,7 +4,10 @@
 ```
 /
 ├── AGENTS.md
+├── package-lock.json
 ├── package.json
+├── config/
+│   └── database.js          # SQLite ファイルの初期化と DI
 ├── src/
 │   ├── server.js            # Express アプリのエントリーポイント
 │   ├── domain/              # ドメインロジックとバリデーション
@@ -12,9 +15,10 @@
 │   ├── routes/              # Express ルーター
 │   ├── utils/               # 共通ユーティリティ
 │   └── views/               # HTML ビュー生成
-├── config/
-│   └── database.js          # SQLite 初期化
-├── tests/                   # node:test ベースのテスト
+├── data/                    # `reservations.sqlite` を保存（起動時に生成）
+├── tests/
+│   ├── helpers/             # Express アプリ向けテストユーティリティ
+│   └── *.test.js            # node:test ベースのユニット/統合テスト
 └── .sdd/                    # SDD ワークスペース
     ├── README.md
     ├── description.md
@@ -26,7 +30,7 @@
 ```
 
 ## コード構成パターン
-ドメイン、リポジトリ、ルーター、ビューを役割ごとに分割。テストは `tests/` 以下でユニット・統合を node:test で実行する。
+HTTP ルーターからドメイン層へ処理を委譲し、リポジトリで SQLite 永続化を行うレイヤード構造。ビューはサーバーサイドで HTML を生成し、クライアントスクリプトが `/reservations` API を呼び出す。テストは `tests/` 以下でユニット・統合を node:test で実行する。
 
 ## ファイル命名規則
 - ドメイン/ユーティリティ：`camelCase.js`
@@ -34,5 +38,6 @@
 - テスト：`*.test.js`
 
 ## 主要な設計原則
-- `AGENTS.md` の品質基準に従い、TDD (node:test) とシンプルなレイヤリングを適用。
-- SQLite を前提に、重複検知・バリデーションをドメイン層で担保。
+- `AGENTS.md` の品質基準に従い、node:test を活用したテスト駆動を指向。
+- SQLite を前提に、重複検知・バリデーションをドメイン層で担保し、HTTP レイヤーで適切なステータスコードを返却。
+- エラーログは共通ミドルウェアで捕捉し、API は JSON 形式を維持。
